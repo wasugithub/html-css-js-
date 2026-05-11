@@ -1,17 +1,17 @@
+// DOM Select
+const nameInput = document.querySelector("#name");
+const ageInput = document.querySelector("#age");
+const addBtn = document.querySelector("#addBtn");
+const studentList = document.querySelector("#studentList");
+const searchInput = document.querySelector("#search");
 
-//dom
-const name = document.querySelector(#name);
-const age = document.querySelector(#age);
-const btn = document.querySelector(#addBtn);
-const search = document.querySelector(#search);
-const studentlist = document.querySelector(#studentList);
-
-// array store 
+// Students Array
 let students = JSON.parse(localStorage.getItem("students")) || [];
 
-//oop class 
-class Student {
-    constructor(name, age) {
+// Student Class
+class Student{
+
+    constructor(name, age){
 
         this.id = Date.now();
         this.name = name;
@@ -19,16 +19,65 @@ class Student {
     }
 }
 
-function renderStudents(data = students) {
+// Render Function
+function renderStudents(data = students){
+
+    studentList.innerHTML = "";
+
+    data.map(student => {
+
+        studentList.innerHTML += `
+        
+        <div class="student">
+
+            <h3>${student.name}</h3>
+
+            <p>Age : ${student.age}</p>
+
+            <button onclick="deleteStudent(${student.id})">
+                Delete
+            </button>
+
+        </div>
+        
+        `;
+    });
+}
+
+// Add Student
+addBtn.addEventListener("click", () => {
+
+    const name = nameInput.value;
+    const age = ageInput.value;
+
+    // Validation
+    if(name === "" || age === ""){
+
+        alert("Fill all fields");
+        return;
+    }
+
+    // Create Object
+    const student = new Student(name, age);
+
+    // Add to Array
+    students.push(student);
+
+    // Save
+    saveToLocalStorage();
+
+    // Refresh UI
     renderStudents();
 
+    // Clear Inputs
     clearInputs();
-};
+});
 
-// Delete Student
-function deleteStudent(id) {
+// Delete Function
+function deleteStudent(id){
 
     students = students.filter(student => {
+
         return student.id !== id;
     });
 
@@ -37,52 +86,36 @@ function deleteStudent(id) {
     renderStudents();
 }
 
-// Search Student
+// Search
 searchInput.addEventListener("keyup", () => {
 
     const value = searchInput.value.toLowerCase();
 
-    const filtered = students.filter(student => {
+    const filteredStudents = students.filter(student => {
 
-        return student.name.toLowerCase().includes(value);
+        return student.name
+            .toLowerCase()
+            .includes(value);
     });
 
-    renderStudents(filtered);
+    renderStudents(filteredStudents);
 });
 
 // Clear Inputs
-function clearInputs() {
+function clearInputs(){
 
     nameInput.value = "";
     ageInput.value = "";
 }
 
-// Local Storage Save
-function saveToLocalStorage() {
+// Save Storage
+function saveToLocalStorage(){
 
-    localStorage.setItem("students", JSON.stringify(students));
+    localStorage.setItem(
+        "students",
+        JSON.stringify(students)
+    );
 }
-
-// Fake Async API
-async function loadFakeData() {
-
-    try {
-
-        const response = await fetch(
-            "https://jsonplaceholder.typicode.com/users"
-        );
-
-        const data = await response.json();
-
-        console.log(data);
-
-    } catch (error) {
-
-        console.log(error);
-    }
-}
-
-loadFakeData();
 
 // Initial Render
 renderStudents();
