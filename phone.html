@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>OOP + Async</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        button {
+            padding: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .city {
+            background: lightgray;
+            padding: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="hello"></div>
+    <h1 id="h1"></h1>
+
+    <button id="btn">Load Cities (Async)</button>
+
+    <div id="town"></div>
+
+    <script>
+
+        class Website {
+
+            constructor() {
+
+                this.hello = document.querySelector("#hello");
+                this.h1 = document.querySelector("#h1");
+                this.btn = document.querySelector("#btn");
+                this.town = document.querySelector("#town");
+
+                this.cities = [];
+
+                // click event
+                this.btn.addEventListener("click", () => {
+                    this.loadCities();
+                });
+            }
+
+            // NORMAL METHOD
+            showHeader() {
+                this.hello.innerHTML = "Myanmar Cities App";
+                this.h1.innerHTML = "Async Demo";
+            }
+
+            // ⭐ ASYNC METHOD
+            async loadCities() {
+
+                this.town.innerHTML = "Loading... ⏳";
+
+                // fake API delay
+                const data = await this.fakeAPI(); 
+
+                this.cities = data;
+
+                this.showCities();
+            }
+
+            // fake API (async simulation)
+            fakeAPI() {
+
+                return new Promise((resolve) => {
+
+                    setTimeout(() => {
+
+                        resolve([
+                            "Yangon",
+                            "Mandalay",
+                            "Nay Pyi Taw",
+                            "Bagan"
+                        ]);
+
+                    }, 2000); // 2 seconds delay
+
+                });
+            }
+
+            // SHOW DATA
+            showCities() {
+
+                this.town.innerHTML = "";
+
+                this.cities.map(city => {
+
+                    this.town.innerHTML += `
+                        <div class="city">
+                            <h3>${city}</h3>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        // OBJECT
+        const app = new Website();
+
+        app.showHeader();
+
+    </script>
+
+</body>
+
+</html>
